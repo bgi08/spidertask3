@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+    <item
+        android:id="@+id/allheroes"
+        android:title="All Heroes" />
+
+    <item
+        android:id="@+id/males"
+        android:title="Male Heroes" />
+
+    <item
+        android:id="@+id/females"
+        android:title="Female Heroes" />
+</menu>
