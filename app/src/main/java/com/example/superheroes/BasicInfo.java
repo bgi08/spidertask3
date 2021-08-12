@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class BasicInfo {
 
-
+    int id;
     String name;
     String slug;
     @SerializedName("powerstats")
@@ -27,6 +27,9 @@ public class BasicInfo {
     @Expose
     Images images;
 
+    public int getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

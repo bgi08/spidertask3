@@ -1,6 +1,7 @@
 package com.example.superheroes;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,18 @@ public class RecyclerView_Adapter extends RecyclerView.Adapter<RecyclerView_Adap
         this.basicInfoArrayList=basicInfoArrayList1;
         this.context = mcontext;
     }
+    public void filterList(ArrayList<BasicInfo> superherofilterllist) {
+        // below line is to add our filtered
+        // list in our course array list.
+        basicInfoArrayList = superherofilterllist;
+        // below line is to notify our adapter
+        // as change in recycler view data.
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
-    public View_Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView_Adapter.View_Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
         View v = LayoutInflater.from(context).inflate(R.layout.hero_item, parent, false);
         return new View_Holder(v);
@@ -41,8 +50,10 @@ public class RecyclerView_Adapter extends RecyclerView.Adapter<RecyclerView_Adap
 
         //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
         BasicInfo currenthero=basicInfoArrayList.get(position);
+        String html = "<b>"+currenthero.getId()+"."+currenthero.getName()+"</b>";
 
-        holder.name.setText(currenthero.getName());
+               holder.name.setText(Html.fromHtml(html));
+
         Picasso.get().load(currenthero.getImages().getSize()).fit().centerInside().into(holder.imageView, new Callback() {
             @Override
             public void onSuccess() {
@@ -65,7 +76,7 @@ public class RecyclerView_Adapter extends RecyclerView.Adapter<RecyclerView_Adap
 
     public class View_Holder extends RecyclerView.ViewHolder {
 
-        private ImageView imageView;
+         ImageView imageView;
         private TextView name;
 
         public View_Holder(@NonNull View itemView) {

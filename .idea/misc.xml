@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/activity_main.xml" value="0.12628865979381443" />
+        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/female_heroes.xml" value="0.16394927536231885" />
         <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/hero_details.xml" value="0.264" />
-        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/hero_item.xml" value="0.3351206434316354" />
+        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/hero_item.xml" value="0.264" />
         <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/heroes_list.xml" value="0.176" />
+        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/layout/male_heroes.xml" value="0.16394927536231885" />
         <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/menu/navigation_menu.xml" value="0.264" />
+        <entry key="..\:/Users/bgiyy/AndroidStudioProjects/SuperHeroes2/app/src/main/res/menu/search_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>
