@@ -16,12 +16,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+
+import com.google.androidgamesdk.gametextinput.Listener;
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,21 +41,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+public class MainActivity extends AppCompatActivity implements OnItemClickListener,NavigationView.OnNavigationItemSelectedListener {
 
     Retrofit retrofit;
     JsonPlaceHolderApi jsonPlaceHolderApi;
     private String heroinfo ;
-    RecyclerView_Adapter recyclerView_adapter;
+    RecyclerView_Adapter recyclerView_adapter,navigation_adapter;
     ArrayList<BasicInfo> basicInfoArrayList;
     RecyclerView Herolist;
     private String url;
     LinearLayoutManager manager;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Herolist = findViewById(R.id.recyclerView);
         drawerLayout=findViewById(R.id.drawer_layout);
@@ -91,37 +102,80 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onitemclick(int position) {
         BasicInfo superhero = basicInfoArrayList.get(position);
-        heroinfo = "Name :" + superhero.getName() +"\n"+"Slug :"+superhero.getSlug()+"\n\n"+"PowerStats"+"\n"+"Intelligence :"+superhero.getPowerStats().getIntelligence()
-                +"\n" + "Strength :"+superhero.getPowerStats().getStrength()+"\n"+"Speed :" +superhero.getPowerStats().getSpeed()+"\n"+"Durability :"+superhero.getPowerStats().getDurability()
-                +"\n"+ "Power :"+superhero.getPowerStats().getPower()+"\n"+"Combat :"+superhero.getPowerStats().getCombat()+"\n\n"+"Appearance"+"\n"+"Gender :"+superhero.getAppearance().getGender()
+        String powerstats="Intelligence :"+superhero.getPowerStats().getIntelligence()
+                +"\n" + "Strength :"+superhero.getPowerStats().getStrength()+"\n"+"Speed :" +superhero.getPowerStats().getSpeed()+"\n"+"Durability :"+superhero.getPowerStats().getDurability();
+
+
+        String Appearance="Gender :"+superhero.getAppearance().getGender()
                 +"\n" + "Race :"+ superhero.getAppearance().getRace()+"\n"+"Height :"+ Arrays.toString(superhero.getAppearance().getHeight()) +"\n" +"Weight :"+ Arrays.toString(superhero.getAppearance().getWeight())+"\n"+
-                "Eyecolor :"+superhero.getAppearance().getEyecolor()+"\n"+"Haircolor :"+superhero.getAppearance().getHaircolor()+"\n\n"+"Biography"+"\n"+"Fullname :"+superhero.getBiography().getFullname()+"\n"+"AlterEgos :" + superhero.getBiography().getAlteregos()+"\n"
-                +"Aliases :"+ Arrays.toString(superhero.getBiography().getAliases()) +"\n"+"Place of Birth :"+ superhero.getBiography().getPlaceofbirth()+"\n"+"First Appearance :"+superhero.getBiography().getFirstappearance()+"\n"+"Publisher :"+superhero.getBiography().getPublisher()+"\n"
-                +"Alignment :"+superhero.getBiography().getAlignment()+"\n\n"+"Work"+"\n"+"Occupation :"+superhero.getWork().getOccupation()+"\n"+"Base :"+superhero.getWork().getBase()+"\n\n"+"Connections"+"\n"+"GroupAffiliation :"+superhero.getConnections().getGroupAffiliation()+"\n"
+                "Eyecolor :"+superhero.getAppearance().getEyecolor()+"\n"+"Haircolor :"+superhero.getAppearance().getHaircolor();
+
+
+        String Biography="Fullname :"+superhero.getBiography().getFullname()+"\n"+"AlterEgos :" + superhero.getBiography().getAlteregos()+"\n"
+        +"Aliases :"+ Arrays.toString(superhero.getBiography().getAliases()) +"\n"+"Place of Birth :"+ superhero.getBiography().getPlaceofbirth()+"\n"+"First Appearance :"+superhero.getBiography().getFirstappearance()+"\n"+"Publisher :"+superhero.getBiography().getPublisher()+"\n"
+        +"Alignment :"+superhero.getBiography().getAlignment();
+
+
+        String Work="Occupation :"+superhero.getWork().getOccupation()+"\n"+"Base :"+superhero.getWork().getBase();
+
+
+        String Connections="GroupAffiliation :"+superhero.getConnections().getGroupAffiliation()+"\n"
                 +"Relatives :"+superhero.getConnections().getRelatives();
 
         url =superhero.getImages().getSize();
         Intent intent = new Intent(this,HeroInfo.class);
-        intent.putExtra("herodetail",heroinfo);
+        intent.putExtra("name",String.valueOf(superhero.getName()));
+        intent.putExtra("powerstats",powerstats);
+        intent.putExtra("appearance",Appearance);
+        intent.putExtra("biography",Biography);
+        intent.putExtra("work",Work);
+        intent.putExtra("connections",Connections);
         intent.putExtra("url",url);
         startActivity(intent);
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId())
-        {
-            case R.id.allheroes:
-                break;
-            case R.id.males:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new MaleFragment()).commit();
-                break;
-            case R.id.females:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FemaleFragment()).commit();
-                break;
+    public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+        int id=item.getItemId();
+        if (id==R.id.males){
+
+            recyclerView_adapter.notifyDataSetChanged();
+            searchHeroes("Male");
+
         }
+        if(id==R.id.females){
+
+            recyclerView_adapter.notifyDataSetChanged();
+            searchHeroes("Female");
+
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+    public void searchHeroes(String text){
+                ArrayList<BasicInfo> superherofilterlist1=new ArrayList<>();
+
+                for (BasicInfo hero : basicInfoArrayList) {
+
+                    if (hero.getAppearance().getGender().equals(text)) {
+                        superherofilterlist1.add(hero);
+                    }
+                }
+
+        if(superherofilterlist1.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(),"nothing",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            recyclerView_adapter.filterList(superherofilterlist1);
+
+        }
+                }
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -156,26 +210,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         // creating a new array list to filter our data.
             ArrayList<BasicInfo> superherofilterlist=new ArrayList<>();
 
-        // running a for loop to compare elements.
         for (BasicInfo hero : basicInfoArrayList) {
-            // checking if the entered string matched with any item of our recycler view.
-            if (hero.getName().toLowerCase().contains(text.toLowerCase())) {
-                // if the item is matched we are
-                // adding it to our filtered list.
 
+            if (hero.getName().toLowerCase().contains(text.toLowerCase())) {
                 superherofilterlist.add(hero);
             }
         }
         if (superherofilterlist.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
-            closeKeyboard();
-
+                       closeKeyboard();
             Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
 
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
+        }
+        else {
             recyclerView_adapter.filterList(superherofilterlist);
 
         }

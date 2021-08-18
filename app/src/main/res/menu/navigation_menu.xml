@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="HardcodedText">
+    tools:showIn="navigation_view">
+<group android:checkableBehavior="single">
     <item
         android:id="@+id/allheroes"
-        android:title="All Heroes" />
+        android:title="All Heroes"
+        android:icon="@drawable/ic_launcher_background"/>
 
     <item
         android:id="@+id/males"
-        android:title="Male Heroes" />
+        android:title="Male Heroes"
+        android:icon="@drawable/outline_male_24"/>
 
     <item
         android:id="@+id/females"
-        android:title="Female Heroes" />
+        android:title="Female Heroes"
+        android:icon="@drawable/outline_female_24"/>
+</group>
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/share"
+                android:icon="@drawable/outline_share_black_24"
+                android:title="Share" />
+            <item
+                android:id="@+id/favorite"
+                android:icon="@drawable/outline_favorite_black_24"
+                android:title="Favorite" />
+        </menu>
+    </item>
 </menu>

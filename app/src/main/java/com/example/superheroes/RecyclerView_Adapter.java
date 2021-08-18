@@ -28,11 +28,7 @@ public class RecyclerView_Adapter extends RecyclerView.Adapter<RecyclerView_Adap
         this.context = mcontext;
     }
     public void filterList(ArrayList<BasicInfo> superherofilterllist) {
-        // below line is to add our filtered
-        // list in our course array list.
         basicInfoArrayList = superherofilterllist;
-        // below line is to notify our adapter
-        // as change in recycler view data.
         notifyDataSetChanged();
     }
 
