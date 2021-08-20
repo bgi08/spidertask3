@@ -27,6 +27,12 @@ public class BasicInfo {
     @Expose
     Images images;
 
+    public BasicInfo(int id, String name, Images image) {
+        this.id=id;
+        this.name=name;
+        this.images=image;
+    }
+
     public int getId() {
         return id;
     }

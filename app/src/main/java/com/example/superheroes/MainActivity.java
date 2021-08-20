@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -43,28 +44,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener,NavigationView.OnNavigationItemSelectedListener {
-
+    private static MainActivity instance;
     Retrofit retrofit;
     JsonPlaceHolderApi jsonPlaceHolderApi;
-    private String heroinfo ;
-    RecyclerView_Adapter recyclerView_adapter,navigation_adapter;
-    ArrayList<BasicInfo> basicInfoArrayList;
-    RecyclerView Herolist;
+    private String heroinfo;
+    RecyclerView_Adapter recyclerView_adapter,gender_adapter;
+    ArrayList<BasicInfo> basicInfoArrayList, favHerolist,herogenderlist;
+    RecyclerView Herolist,Genderlist;
     private String url;
     LinearLayoutManager manager;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    ImageButton favbutton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        instance = this;
         Herolist = findViewById(R.id.recyclerView);
-        drawerLayout=findViewById(R.id.drawer_layout);
-        NavigationView navigationView=findViewById(R.id.nav_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        actionBarDrawerToggle=new ActionBarDrawerToggle(this,drawerLayout,R.string.nav_open,R.string.nav_close);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,13 +77,14 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         getRetrofit();
         jsonPlaceHolderApi = getRetrofit();
         getAllNames();
+
     }
 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(actionBarDrawerToggle.onOptionsItemSelected(item)) {
-        return true;
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -87,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     private JsonPlaceHolderApi getRetrofit() {
 
-        if(retrofit==null)
-        {
+        if (retrofit == null) {
             retrofit = new Retrofit
                     .Builder()
                     .baseUrl("https://akabab.github.io/superhero-api/api/")
@@ -102,78 +106,96 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onitemclick(int position) {
         BasicInfo superhero = basicInfoArrayList.get(position);
-        String powerstats="Intelligence :"+superhero.getPowerStats().getIntelligence()
-                +"\n" + "Strength :"+superhero.getPowerStats().getStrength()+"\n"+"Speed :" +superhero.getPowerStats().getSpeed()+"\n"+"Durability :"+superhero.getPowerStats().getDurability();
+        String powerstats = "Intelligence :" + superhero.getPowerStats().getIntelligence()
+                + "\n" + "Strength :" + superhero.getPowerStats().getStrength() + "\n" + "Speed :" + superhero.getPowerStats().getSpeed() + "\n" + "Durability :" + superhero.getPowerStats().getDurability();
 
 
-        String Appearance="Gender :"+superhero.getAppearance().getGender()
-                +"\n" + "Race :"+ superhero.getAppearance().getRace()+"\n"+"Height :"+ Arrays.toString(superhero.getAppearance().getHeight()) +"\n" +"Weight :"+ Arrays.toString(superhero.getAppearance().getWeight())+"\n"+
-                "Eyecolor :"+superhero.getAppearance().getEyecolor()+"\n"+"Haircolor :"+superhero.getAppearance().getHaircolor();
+        String Appearance = "Gender :" + superhero.getAppearance().getGender()
+                + "\n" + "Race :" + superhero.getAppearance().getRace() + "\n" + "Height :" + Arrays.toString(superhero.getAppearance().getHeight()) + "\n" + "Weight :" + Arrays.toString(superhero.getAppearance().getWeight()) + "\n" +
+                "Eyecolor :" + superhero.getAppearance().getEyecolor() + "\n" + "Haircolor :" + superhero.getAppearance().getHaircolor();
 
 
-        String Biography="Fullname :"+superhero.getBiography().getFullname()+"\n"+"AlterEgos :" + superhero.getBiography().getAlteregos()+"\n"
-        +"Aliases :"+ Arrays.toString(superhero.getBiography().getAliases()) +"\n"+"Place of Birth :"+ superhero.getBiography().getPlaceofbirth()+"\n"+"First Appearance :"+superhero.getBiography().getFirstappearance()+"\n"+"Publisher :"+superhero.getBiography().getPublisher()+"\n"
-        +"Alignment :"+superhero.getBiography().getAlignment();
+        String Biography = "Fullname :" + superhero.getBiography().getFullname() + "\n" + "AlterEgos :" + superhero.getBiography().getAlteregos() + "\n"
+                + "Aliases :" + Arrays.toString(superhero.getBiography().getAliases()) + "\n" + "Place of Birth :" + superhero.getBiography().getPlaceofbirth() + "\n" + "First Appearance :" + superhero.getBiography().getFirstappearance() + "\n" + "Publisher :" + superhero.getBiography().getPublisher() + "\n"
+                + "Alignment :" + superhero.getBiography().getAlignment();
 
 
-        String Work="Occupation :"+superhero.getWork().getOccupation()+"\n"+"Base :"+superhero.getWork().getBase();
+        String Work = "Occupation :" + superhero.getWork().getOccupation() + "\n" + "Base :" + superhero.getWork().getBase();
 
 
-        String Connections="GroupAffiliation :"+superhero.getConnections().getGroupAffiliation()+"\n"
-                +"Relatives :"+superhero.getConnections().getRelatives();
+        String Connections = "GroupAffiliation :" + superhero.getConnections().getGroupAffiliation() + "\n"
+                + "Relatives :" + superhero.getConnections().getRelatives();
+        String shareinfo = "Fullname :" + superhero.getBiography().getFullname() + "Gender :" + superhero.getAppearance().getGender() + "Place of Birth :" + superhero.getBiography().getPlaceofbirth() + "\n" + "First Appearance :" + superhero.getBiography().getFirstappearance()
+                + "\n" + "Race :" + superhero.getAppearance().getRace() + "\n" + "Height :" + Arrays.toString(superhero.getAppearance().getHeight()) + "\n" + "Weight :" + Arrays.toString(superhero.getAppearance().getWeight()) + "\n" +
+                "Eyecolor :" + superhero.getAppearance().getEyecolor() + "\n" + "Haircolor :" + superhero.getAppearance().getHaircolor();
 
-        url =superhero.getImages().getSize();
-        Intent intent = new Intent(this,HeroInfo.class);
-        intent.putExtra("name",String.valueOf(superhero.getName()));
-        intent.putExtra("powerstats",powerstats);
-        intent.putExtra("appearance",Appearance);
-        intent.putExtra("biography",Biography);
-        intent.putExtra("work",Work);
-        intent.putExtra("connections",Connections);
-        intent.putExtra("url",url);
+
+        url = superhero.getImages().getSize();
+        Intent intent = new Intent(this, HeroInfo.class);
+        intent.putExtra("name", String.valueOf(superhero.getName()));
+        intent.putExtra("powerstats", powerstats);
+        intent.putExtra("appearance", Appearance);
+        intent.putExtra("biography", Biography);
+        intent.putExtra("work", Work);
+        intent.putExtra("connections", Connections);
+        intent.putExtra("url", url);
+        intent.putExtra("shareinfo", shareinfo);
         startActivity(intent);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-        int id=item.getItemId();
-        if (id==R.id.males){
+        int id = item.getItemId();
+        if (id == R.id.males) {
 
             recyclerView_adapter.notifyDataSetChanged();
             searchHeroes("Male");
 
         }
-        if(id==R.id.females){
+        if (id == R.id.females) {
 
             recyclerView_adapter.notifyDataSetChanged();
             searchHeroes("Female");
 
         }
+        if (id == R.id.favorite) {
+        }
+
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void searchHeroes(String text){
-                ArrayList<BasicInfo> superherofilterlist1=new ArrayList<>();
 
-                for (BasicInfo hero : basicInfoArrayList) {
-
-                    if (hero.getAppearance().getGender().equals(text)) {
-                        superherofilterlist1.add(hero);
-                    }
-                }
-
-        if(superherofilterlist1.isEmpty())
-        {
-            Toast.makeText(getApplicationContext(),"nothing",Toast.LENGTH_SHORT).show();
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-        else
-        {
-            recyclerView_adapter.filterList(superherofilterlist1);
+
+    }
+
+
+    public void searchHeroes(String text) {
+     herogenderlist = new ArrayList<>();
+
+        for (BasicInfo hero : basicInfoArrayList) {
+
+            if (hero.getAppearance().getGender().equals(text))
+            {
+                herogenderlist.add(hero);
+            }
 
         }
-                }
 
+        if (herogenderlist.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "nothing", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            recyclerView_adapter.genderlist(herogenderlist);
 
+        }
+    }
 
 
     @Override
@@ -193,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 return false;
             }
 
@@ -204,11 +227,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 return false;
             }
         });
+
         return true;
     }
+
     public void filter(String text) {
         // creating a new array list to filter our data.
-            ArrayList<BasicInfo> superherofilterlist=new ArrayList<>();
+        ArrayList<BasicInfo> superherofilterlist = new ArrayList<>();
 
         for (BasicInfo hero : basicInfoArrayList) {
 
@@ -217,11 +242,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             }
         }
         if (superherofilterlist.isEmpty()) {
-                       closeKeyboard();
+            closeKeyboard();
             Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
 
-        }
-        else {
+        } else {
             recyclerView_adapter.filterList(superherofilterlist);
 
         }
@@ -230,18 +254,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     public void getAllNames() {
-        Call<List<BasicInfo>> call=jsonPlaceHolderApi.getBasicInfo();
+        Call<List<BasicInfo>> call = jsonPlaceHolderApi.getBasicInfo();
 
         call.enqueue(new Callback<List<BasicInfo>>() {
             @Override
             public void onResponse(Call<List<BasicInfo>> call, Response<List<BasicInfo>> response) {
                 List<BasicInfo> list = response.body();
                 basicInfoArrayList = new ArrayList<>(list);
+                herogenderlist=new ArrayList<>(list);
                 manager = new LinearLayoutManager(MainActivity.this);
-                recyclerView_adapter = new RecyclerView_Adapter(MainActivity.this,basicInfoArrayList);
+                recyclerView_adapter = new RecyclerView_Adapter(MainActivity.this, basicInfoArrayList);
                 Herolist.setLayoutManager(manager);
                 Herolist.setAdapter(recyclerView_adapter);
                 recyclerView_adapter.setOnitemclicklistenerList(MainActivity.this);
+
             }
 
             @Override
@@ -252,13 +278,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
 
     }
-    public void closeKeyboard()
-    {
+
+    public void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+
 }
+
+
+
 

@@ -3,4 +3,10 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="search">Search</string>
+
+    <string name="textview">TextView</string>
+    <string name="todo">TODO</string>
+    <string name="superheroname">superheroname</string>
+
+
 </resources>
